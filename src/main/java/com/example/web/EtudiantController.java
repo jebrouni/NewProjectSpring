@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,8 @@ import com.example.enteties.Etudiant;
 @Controller
 @RequestMapping(value="/Etudiant")
 public class EtudiantController {
+	@Value("${dir.images}")
+	private String imageDir;
 	//injection de dependences
 	@Autowired
      private EtudiantRepository etudiantRepository;
@@ -61,21 +64,26 @@ public class EtudiantController {
 		return "FormEtudiant";
 	}
 	@RequestMapping(value="/SaveEtudiant", method=RequestMethod.POST)
-	public String  save(@Valid Etudiant et,BindingResult bindingResult) {
+	public String  save(@Valid Etudiant et,BindingResult bindingResult,
+			@RequestParam(name="picture") MultipartFile file) throws Exception, IOException {
 		if(bindingResult.hasErrors()) {
-			
+		
 			return "FormEtudiant";
 		}
-	// @RequestParam(name="photo") MultipartFile file) throws IllegalStateException, IOException
-//		if(!(file.isEmpty())) {
-//			et.setPhoto(file.getOriginalFilename());
-//			file.transferTo(new File(System.getProperty("user.home")+"/sco"));
-//			
-//		}
-			etudiantRepository.save(et);
+		if(!(file.isEmpty())) {
+			et.setPhoto(file.getOriginalFilename());
+		}
+		etudiantRepository.save(et);
+		if(!(file.isEmpty())) {
+			
+     	    et.setPhoto(file.getOriginalFilename());
+     		file.transferTo(new File(imageDir+et.getId()));
+		}
+
+			
 		
 		
 		
 		return "redirect:Index";
 	}
-}
+	}

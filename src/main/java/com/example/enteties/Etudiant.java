@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotEmpty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +17,10 @@ import javax.persistence.Id;
 
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.NotEmpty;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+
 
 
 
@@ -26,16 +30,21 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Etudiant  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue
 	private Long id;
-//	@Column(name="Nom",length = 30)
-//	@Size(min=5,max=30)
-//	@NotEmpty
+	@Column(name="Nom",length = 30)
+	@Size(min=5,max=30,message 
+		      = "About Me must be between 5 and 30 characters")
+	@NotEmpty(message = "Name cannot be null")
 	private String nom;
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date dateNaissance;
-//	@NotEmpty
+	@NotEmpty(message = "Email cannot be null")
 	private String email;
 	private String photo;
 	
